@@ -1,72 +1,86 @@
+```markdown
 # FuncErrors Token Contract
-
-`FuncErrors` is a simple ERC-20 token contract built with Solidity. It utilizes OpenZeppelin's ERC20 and Ownable libraries for token management and access control. The contract demonstrates the use of `require()`, `assert()`, and `revert()` statements for error handling in smart contracts.
 
 ## Overview
 
-This contract defines an ERC-20 token called "FuncErrors" (`FE`). Only the owner of the contract can mint new tokens, and users can burn their own tokens or transfer tokens to others with specific conditions.
+`FuncErrors` is an ERC20 token contract implementing minting, burning, and custom transfer restrictions. It is based on the OpenZeppelin ERC20 and Ownable contracts and adds functionality to allow the contract owner to mint tokens, users to burn their own tokens, and custom validation logic for token transfers.
 
 ## Features
 
+- **ERC20 Token**: Standard token functionality (transfer, balanceOf, etc.).
 - **Minting**: Only the contract owner can mint new tokens.
-- **Burning**: Any user can burn their tokens, reducing the total supply.
-- **Transfers**: Tokens can be transferred with a minimum transfer amount requirement.
+- **Burning**: Users can burn (destroy) their own tokens, reducing the total supply.
+- **Transfer Restrictions**: Transfer amounts must be at least 20 tokens, with a custom error message if the transfer is invalid.
 
-## Error Handling
+## Contract Details
 
-The contract includes three main error handling mechanisms:
-- **`require`**: Used to validate inputs (e.g., non-zero amounts) and ensure users have sufficient balance.
-- **`assert`**: Used to enforce invariants, ensuring conditions that should never fail within the contract.
-- **`revert`**: Used to halt execution with a custom error message for specific conditions (e.g., minimum transfer amount).
+### Minting
 
-## Contract Functions
+The contract owner can mint new tokens to a specified address. Only the owner can call the `mint` function.
 
-### `mint(address account, uint256 amount)`
+```solidity
+function mint(address account, uint256 amount) external onlyOwner;
+```
 
-Mints new tokens to the specified account. Only the owner can call this function.
+- `account`: The address to receive the minted tokens.
+- `amount`: The number of tokens to mint (must be greater than 0).
 
-- **Parameters**:
-  - `account`: Address to receive the minted tokens.
-  - `amount`: Number of tokens to mint (must be greater than 0).
+### Burning
 
-- **Error Handling**:
-  - Uses `require()` to check that `amount` is greater than 0.
+Users can burn their own tokens, which reduces both their token balance and the total supply.
 
-### `burn(uint256 amount)`
+```solidity
+function burn(uint256 amount) external;
+```
 
-Allows the caller to burn a specified amount of their tokens, reducing the total supply.
+- `amount`: The number of tokens to burn (must be greater than 0 and less than or equal to the user's balance).
 
-- **Parameters**:
-  - `amount`: Number of tokens to burn (must be greater than 0 and less than or equal to the caller's balance).
+### Transfer Restrictions
 
-- **Error Handling**:
-  - Uses `require()` to check that `amount` is valid and the caller has a sufficient balance.
-  - Uses `assert()` to validate that the total supply has been reduced by the burned amount.
+The contract overrides the default `transfer` function to ensure that the transfer amount is at least 20 tokens.
 
-### `transfer(address to, uint256 amount)`
+```solidity
+function transfer(address to, uint256 amount) public virtual override returns (bool);
+```
 
-Overrides the standard ERC-20 transfer function, requiring a minimum transfer amount of 20 tokens.
+- `to`: The recipient's address.
+- `amount`: The number of tokens to transfer (must be at least 20).
 
-- **Parameters**:
-  - `to`: Address to receive the tokens.
-  - `amount`: Number of tokens to transfer (must be at least 20).
+If the transfer amount is less than 20, the function will revert with a custom error message: `Transfer failed: Amount must be at least 20`.
 
-- **Error Handling**:
-  - Uses `require()` to check that `amount` is greater than 0 and the sender has a sufficient balance.
-  - Uses `revert()` to halt the transaction if the `amount` is less than 20 tokens, with a custom error message.
+## Installation
+
+To install the dependencies for this contract, you will need to use [Hardhat](https://hardhat.org/) or [Truffle](https://www.trufflesuite.com/truffle). Here’s how you can install the dependencies with npm:
+
+1. Initialize a new project:
+
+    ```bash
+    npm init -y
+    ```
+
+2. Install Hardhat (or Truffle):
+
+    ```bash
+    npm install --save-dev hardhat
+    ```
+
+3. Install OpenZeppelin Contracts:
+
+    ```bash
+    npm install @openzeppelin/contracts@4.9.0
+    ```
 
 ## Usage
 
-1. **Minting Tokens**: Only the contract owner can mint tokens to a specified address.
-2. **Burning Tokens**: Any user can burn their tokens to decrease the total supply.
-3. **Transferring Tokens**: Users can transfer tokens to others but must meet the minimum transfer requirement.
-
-## Requirements
-
-- **Solidity Version**: ^0.8.0
-- **Dependencies**: 
-  - OpenZeppelin Contracts v4.9.0 for `ERC20` and `Ownable` modules
+1. Deploy the contract to the Ethereum network using your preferred deployment framework (e.g., Hardhat or Truffle).
+2. Interact with the contract using any Ethereum wallet or frontend interface, such as [Ethers.js](https://docs.ethers.io/) or [Web3.js](https://web3js.readthedocs.io/).
 
 ## License
 
-This project is licensed under the MIT License.
+This project is licensed under the MIT License - see the (CurtRusselM.Celeste) file for details.
+
+## Contact
+
+For any questions or feedback, please open an issue or contact us via [CurtRusselCeleste.com](https://www.facebook.com/profile.php?id=100069766380432&mibextid=ZbWKwL).
+
+```
