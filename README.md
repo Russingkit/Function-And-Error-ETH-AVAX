@@ -1,5 +1,5 @@
 
-# FuncErrors Token Contract
+# Function and Errors ETH-AVAX Token Contract
 
 ## Overview
 
